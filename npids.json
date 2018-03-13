@@ -1,0 +1,7 @@
+{"_id" : "_design/npids",
+	"views" : {
+		"get_npids" : {
+			"map" : "function(doc){if(doc.type == 'Npid'){emit(doc.national_id,doc._id)}}"
+		}
+	}
+}

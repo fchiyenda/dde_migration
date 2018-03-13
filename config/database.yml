@@ -1,0 +1,34 @@
+production:
+  adapter: mysql
+  username: 
+  database: openmrs_test
+  password: 
+  host: localhost
+  pool: 500
+
+development:
+  adapter: mysql2
+  username: test
+  database: openmrs_MPC
+  password: test
+  host: localhost
+  pool: 500
+
+test: &TEST
+  adapter: mysql
+  database: 
+  username: test
+  password: test
+  host: localhost
+evr:
+  adapter: mysql2
+  mysqlusername: test
+  mysqlpassword: test
+  database: dde_person_evr_mtema
+  couchdb: dde_person_evr_mtema
+  couchdb_port: 5984
+  host: localhost
+
+
+cucumber:
+  <<: *TEST
