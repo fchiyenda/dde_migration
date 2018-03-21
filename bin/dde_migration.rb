@@ -97,7 +97,7 @@ def start
 	names = get_database_names
 	names.sort.each do |databasename|
 		patient_ids = get_version4_patient_ids(databasename)
-		#puts "#{patient_ids.length}  #{databasename}"
+		puts "#{patient_ids.length}  #{databasename}"
 		create_migrate_to_dde_flattables(patient_ids,databasename) unless patient_ids.blank?
 	end
 
@@ -115,13 +115,13 @@ EOF
 end
 
 def create_migrate_to_dde_flattables(patient_ids,databasename)
-
+begin
   location = ActiveRecord::Base.connection.select_one <<EOF
   SELECT property_value FROM #{databasename}.global_property WHERE property = 'current_health_center_id';
 EOF
-
+rescue
    location_id = location['property_value'].to_i rescue 0
-
+end
 	begin
 	patient_ids.each do |patient_id|
 		person = ActiveRecord::Base.connection.select_one <<EOF
