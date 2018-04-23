@@ -106,35 +106,35 @@ ActiveRecord::Base.connection.select_all <<EOF
 				SELECT * FROM evr_merge_person
 				WHERE identifier = '#{person['_id']}'
 				AND lower(given_name) = lower('#{person['names']['given_name']}')
-				AND middle_name = '#{person['names']['middle_name']}'
-				AND family_name = '#{person['names']['family_name']}'
-				AND gender = '#{person['gender']}'
+				AND lower(middle_name) = lower('#{person['names']['middle_name']}')
+				AND lower(family_name) = lower('#{person['names']['family_name']}')
+				AND lower(gender) = lower('#{person['gender']}')
 				AND dob = '#{person['birthdate']}'
 				AND dob_estimated = '#{person['birthdate_estimated']}'
-				AND home_district = '#{person['addresses']['home_district']}'
-				AND home_ta = '#{person['addresses']['home_ta']}'
-				AND home_village = '#{person['addresses']['home_village']}'
-				AND current_district = '#{person['addresses']['current_district']}'
-				AND current_ta = '#{person['addresses']['current_ta']}'
-				AND current_village = '#{person['addresses']['current_village']}';
+				AND lower(home_district) = lower('#{person['addresses']['home_district']}')
+				AND lower(home_ta) = lower('#{person['addresses']['home_ta']}')
+				AND lower(home_village) = lower('#{person['addresses']['home_village']}')
+				AND lower(current_district) = lower('#{person['addresses']['current_district']}')
+				AND lower(current_ta) = lower('#{person['addresses']['current_ta']}')
+				AND lower(current_village) = lower('#{person['addresses']['current_village']}');
 EOF
 end
 
 def scenario2(person)
 	ActiveRecord::Base.connection.select_all <<EOF
 				SELECT * FROM evr_merge_person
-				WHERE given_name = '#{person['names']['given_name']}'
-				AND middle_name = '#{person['names']['middle_name']}'
-				AND family_name = '#{person['names']['family_name']}'
-				AND gender = '#{person['gender']}'
+				WHERE lower(given_name) = lower('#{person['names']['given_name']}')
+				AND lower(middle_name) = lower('#{person['names']['middle_name']}')
+				AND lower(family_name) = lower('#{person['names']['family_name']}')
+				AND lower(gender) = lower('#{person['gender']}')
 				AND dob = '#{person['birthdate']}'
 				AND dob_estimated = '#{person['birthdate_estimated']}'
-				AND home_district = '#{person['addresses']['home_district']}'
-				AND home_ta = '#{person['addresses']['home_ta']}'
-				AND home_village = '#{person['addresses']['home_village']}'
-				AND current_district = '#{person['addresses']['current_district']}'
-				AND current_ta = '#{person['addresses']['current_ta']}'
-				AND current_village = '#{person['addresses']['current_village']}';
+				AND lower(home_district) = lower('#{person['addresses']['home_district']}')
+				AND lower(home_ta) = lower('#{person['addresses']['home_ta']}')
+				AND lower(home_village) = lower('#{person['addresses']['home_village']}')
+				AND lower(current_district) = lower('#{person['addresses']['current_district']}')
+				AND lower(current_ta) = lower('#{person['addresses']['current_ta']}')
+				AND lower(current_village) = lower('#{person['addresses']['current_village']}');
 EOF
 end
 
@@ -142,30 +142,30 @@ def scenario3(person)
 	ActiveRecord::Base.connection.select_all <<EOF
 				SELECT * FROM evr_merge_person
 				WHERE identifier = '#{person['_id']}'
-				AND given_name = '#{person['names']['given_name']}'
-				AND middle_name = '#{person['names']['middle_name']}'
-				AND family_name = '#{person['names']['family_name']}'
-				AND gender = '#{person['gender']}'
+				AND lower(given_name) = lower('#{person['names']['given_name']}')
+				AND lower(middle_name) = lower('#{person['names']['middle_name']}')
+				AND lower(family_name) = lower('#{person['names']['family_name']}')
+				AND lower(gender) = lower('#{person['gender']}')
 				AND dob = '#{person['birthdate']}'
 				AND dob_estimated = '#{person['birthdate_estimated']}'
-				AND home_district = '#{person['addresses']['home_district']}'
-				AND home_ta = '#{person['addresses']['home_ta']}'
-				AND home_village = '#{person['addresses']['home_village']}';
+				AND lower(home_district) = lower('#{person['addresses']['home_district']}')
+				AND lower(home_ta) = lower('#{person['addresses']['home_ta']}')
+				AND lower(home_village) = lower('#{person['addresses']['home_village']}');
 EOF
 end
 
 def scenario4(person)
   ActiveRecord::Base.connection.select_all <<EOF
 				SELECT * FROM evr_merge_person
-				WHERE given_name = '#{person['names']['given_name']}'
-				AND middle_name = '#{person['names']['middle_name']}'
-				AND family_name = '#{person['names']['family_name']}'
-				AND gender = '#{person['gender']}'
+				WHERE lower(given_name) = lower('#{person['names']['given_name']}')
+				AND lower(middle_name) = lower('#{person['names']['middle_name']}')
+				AND lower(family_name) = lower('#{person['names']['family_name']}')
+				AND lower(gender) = lower('#{person['gender']}')
 				AND dob = '#{person['birthdate']}'
 				AND dob_estimated = '#{person['birthdate_estimated']}'
-				AND home_district = '#{person['addresses']['home_district']}'
-				AND home_ta = '#{person['addresses']['home_ta']}'
-				AND home_village = '#{person['addresses']['home_village']}';
+				AND lower(home_district) = lower('#{person['addresses']['home_district']}')
+				AND lower(home_ta) = lower('#{person['addresses']['home_ta']}')
+				AND lower(home_village) = lower('#{person['addresses']['home_village']}');
 EOF
 end
 
@@ -173,32 +173,32 @@ def scenario5(person)
   ActiveRecord::Base.connection.select_all <<EOF
 				SELECT * FROM evr_merge_person
 				WHERE identifier = '#{person['_id']}'
-				AND given_name = '#{person['names']['given_name']}'
-				AND middle_name = '#{person['names']['middle_name']}'
-				AND family_name = '#{person['names']['family_name']}'
-				AND gender = '#{person['gender']}'
+				AND lower(given_name) = lower('#{person['names']['given_name']}')
+				AND lower(middle_name) = lower('#{person['names']['middle_name']}')
+				AND lower(family_name) = lower('#{person['names']['family_name']}')
+				AND lower(gender) = lower('#{person['gender']}')
 				AND dob = '#{person['birthdate']}'
 				AND dob_estimated = '#{person['birthdate_estimated']}'
-				AND home_ta = '#{person['addresses']['home_ta']}'
-				AND home_village = '#{person['addresses']['home_village']}'
-				AND current_ta = '#{person['addresses']['current_ta']}'
-				AND current_village = '#{person['addresses']['current_village']}';
+				AND lower(home_ta) = lower('#{person['addresses']['home_ta']}')
+				AND lower(home_village) = lower('#{person['addresses']['home_village']}')
+				AND lower(current_ta) = lower('#{person['addresses']['current_ta']}')
+				AND lower(current_village) = lower('#{person['addresses']['current_village']}');
 EOF
 end
 
 def scenario6(person)
 	ActiveRecord::Base.connection.select_all <<EOF
 				SELECT * FROM evr_merge_person
-				WHERE given_name = '#{person['names']['given_name']}'
-				AND middle_name = '#{person['names']['middle_name']}'
-				AND family_name = '#{person['names']['family_name']}'
-				AND gender = '#{person['gender']}'
+				WHERE lower(given_name) = lower('#{person['names']['given_name']}')
+				AND lower(middle_name) = lower('#{person['names']['middle_name']}')
+				AND lower(family_name) = lower('#{person['names']['family_name']}')
+				AND lower(gender) = lower('#{person['gender']}')
 				AND dob = '#{person['birthdate']}'
 				AND dob_estimated = '#{person['birthdate_estimated']}'
-				AND home_ta = '#{person['addresses']['home_ta']}'
-				AND home_village = '#{person['addresses']['home_village']}'
-				AND current_ta = '#{person['addresses']['current_ta']}'
-				AND current_village = '#{person['addresses']['current_village']}';
+				AND lower(home_ta) = lower('#{person['addresses']['home_ta']}')
+				AND lower(home_village) = lower('#{person['addresses']['home_village']}')
+				AND lower(current_ta) = lower('#{person['addresses']['current_ta']}')
+				AND lower(current_village) = lower('#{person['addresses']['current_village']}');
 EOF
 end
 
@@ -206,28 +206,28 @@ def scenario7(person)
 	ActiveRecord::Base.connection.select_all <<EOF
 				SELECT * FROM evr_merge_person
 				WHERE identifier = '#{person['_id']}'
-				AND given_name = '#{person['names']['given_name']}'
-				AND middle_name = '#{person['names']['middle_name']}'
-				AND family_name = '#{person['names']['family_name']}'
-				AND gender = '#{person['gender']}'
+				AND lower(given_name) = lower('#{person['names']['given_name']}')
+				AND lower(middle_name) = lower('#{person['names']['middle_name']}')
+				AND lower(family_name) = lower('#{person['names']['family_name']}')
+				AND lower(gender) = lower('#{person['gender']}')
 				AND dob = '#{person['birthdate']}'
 				AND dob_estimated = '#{person['birthdate_estimated']}'
-				AND home_ta = '#{person['addresses']['home_ta']}'
-				AND home_village = '#{person['addresses']['home_village']}';
+				AND lower(home_ta) = lower('#{person['addresses']['home_ta']}')
+				AND lower(home_village) = lower('#{person['addresses']['home_village']}');
 EOF
 end
 
 def scenario8(person)
 	ActiveRecord::Base.connection.select_all <<EOF
 				SELECT * FROM evr_merge_person
-				WHERE given_name = '#{person['names']['given_name']}'
-				AND middle_name = '#{person['names']['middle_name']}'
-				AND family_name = '#{person['names']['family_name']}'
-				AND gender = '#{person['gender']}'
+				WHERE lower(given_name) = lower('#{person['names']['given_name']}')
+				AND lower(middle_name) = lower('#{person['names']['middle_name']}')
+				AND lower(family_name) = lower('#{person['names']['family_name']}')
+				AND lower(gender) = lower('#{person['gender']}')
 				AND dob = '#{person['birthdate']}'
 				AND dob_estimated = '#{person['birthdate_estimated']}'
-				AND home_ta = '#{person['addresses']['home_ta']}'
-				AND home_village = '#{person['addresses']['home_village']}';
+				AND lower(home_ta) = lower('#{person['addresses']['home_ta']}')
+				AND lower(home_village) = lower('#{person['addresses']['home_village']}');
 EOF
 end
 
@@ -235,10 +235,10 @@ def scenario9(person)
 	ActiveRecord::Base.connection.select_all <<EOF
 				SELECT * FROM evr_merge_person
 				WHERE identifier = '#{person['_id']}'
-				AND given_name = '#{person['given_name']}'
-				AND middle_name = '#{person['middle_name']}'
-				AND family_name = '#{person['family_name']}'
-				AND gender = '#{person['gender']}'
+				AND lower(given_name) = lower('#{person['names']['given_name']}')
+				AND lower(middle_name) = lower('#{person['names']['middle_name']}')
+				AND lower(family_name) = lower('#{person['names']['family_name']}')
+				AND lower(gender) = lower('#{person['gender']}')
 				AND dob = '#{person['birthdate']}'
 				AND dob_estimated = '#{person['birthdate_estimated']}';
 EOF
@@ -247,28 +247,28 @@ end
 def scenario10(person)
 ActiveRecord::Base.connection.select_all <<EOF
 				SELECT * FROM evr_merge_person
-				WHERE given_name = '#{person['names']['given_name']}'
-				AND middle_name = '#{person['names']['middle_name']}'
-				AND family_name = '#{person['names']['family_name']}'
-				AND gender = '#{person['gender']}'
+				WHERE lower(given_name) = lower('#{person['names']['given_name']}')
+				AND lower(middle_name) = lower('#{person['names']['middle_name']}')
+				AND lower(family_name) = lower('#{person['names']['family_name']}')
+				AND lower(gender) = lower('#{person['gender']}')
 				AND dob = '#{person['birthdate']}'
 				AND dob_estimated = '#{person['birthdate_estimated']}'
-				AND home_district = '#{person['addresses']['home_district']}'
-				AND home_ta = '#{person['addresses']['home_ta']}';
+				AND lower(home_ta) = lower('#{person['addresses']['home_ta']}')
+				AND lower(home_village) = lower('#{person['addresses']['home_village']}');
 EOF
 end
 
 def scenario11(person)
 ActiveRecord::Base.connection.select_all <<EOF
 				SELECT * FROM evr_merge_person
-				WHERE given_name = '#{person['names']['given_name']}'
-				AND middle_name = '#{person['names']['middle_name']}'
-				AND family_name = '#{person['names']['family_name']}'
-				AND gender = '#{person['gender']}'
+				WHERE lower(given_name) = lower('#{person['names']['given_name']}')
+				AND lower(middle_name) = lower('#{person['names']['middle_name']}')
+				AND lower(family_name) = lower('#{person['names']['family_name']}')
+				AND lower(gender) = lower('#{person['gender']}')
 				AND dob = '#{person['birthdate']}'
 				AND dob_estimated = '#{person['birthdate_estimated']}'
-				AND current_district = '#{person['addresses']['current_district']}'
-				AND current_ta = '#{person['addresses']['current_ta']}';
+				AND lower(current_district) = lower('#{person['addresses']['current_district']}')
+				AND lower(current_ta) = lower('#{person['addresses']['current_ta']}');
 EOF
 end
 
