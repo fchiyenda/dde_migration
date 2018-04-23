@@ -289,8 +289,28 @@ EOF
 EOF
 
   begin
-    dde_person_file = "#{Rails.root}/log/dde_person.sql"
-    File.open(dde_person_file, 'a') { |file| file.write(dde_person) }
+    case @dde_person_primary_id
+    when 0..500_000
+       `echo '#{dde_person}' >> #{Rails.root}/log/dde_person1.sql`
+      unless $? == 0
+        `echo '#{dde_person}' >> #{Rails.root}/log/dde_migration_error.log`
+      end
+    when 500_000..1_000_000
+       `echo '#{dde_person}' >> #{Rails.root}/log/dde_person2.sql`
+      unless $? == 0
+        `echo '#{dde_person}' >> #{Rails.root}/log/dde_migration_error.log`
+      end
+    when 1_000_000..1_500_000
+       `echo '#{dde_person}' >> #{Rails.root}/log/dde_person3.sql`
+      unless $? == 0
+        `echo '#{dde_person}' >> #{Rails.root}/log/dde_migration_error.log`
+      end
+    when 1_500_000..2_000_000
+       `echo '#{dde_person}' >> #{Rails.root}/log/dde_person4.sql`
+      unless $? == 0
+        `echo '#{dde_person}' >> #{Rails.root}/log/dde_migration_error.log`
+      end
+    end
   rescue
     `echo '#{dde_person}' >> #{Rails.root}/log/dde_migration_error.log`
   end

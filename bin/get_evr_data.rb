@@ -74,6 +74,7 @@ ActiveRecord::Base.connection.execute <<EOF
   `gender` VARCHAR(20) NULL,
   `dob` DATE NULL,
   `dob_estimated` BINARY NULL,
+  `closest_landmark` VARCHAR(255) NULL,
   `current_residence` VARCHAR(45) NULL,
   `current_village` VARCHAR(245) NULL,
   `current_ta` VARCHAR(245) NULL,

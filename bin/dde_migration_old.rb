@@ -98,18 +98,6 @@ EOF
 
 end
 
-def start
-	create_tables
-	names = get_database_names
-	count = []
-	names.each do |databasename|
-		count << databasename
-		patient_ids = get_version4_patient_ids(databasename)
-		puts "Processing database #{count.length} of #{names.length} #{patient_ids.length}  #{databasename}"
-		create_migrate_to_dde_flattables(patient_ids,databasename) unless patient_ids.blank?
-	end
-end
-
 def create_migrate_to_dde_flattables(patient_ids,databasename)
 
 	begin
@@ -230,6 +218,19 @@ EOF
   end
 
   puts ".... #{dname} created: #{dde_person['given_name']} #{dde_person['family_name']} #{dde_person['gender']} >>> #{dde_person['primary_identifier']}"
+end
+
+
+def start
+	create_tables
+	names = get_database_names
+	count = []
+	names.each do |databasename|
+		count << databasename
+		patient_ids = get_version4_patient_ids(databasename)
+		puts "Processing database #{count.length} of #{names.length} #{patient_ids.length}  #{databasename}"
+		create_migrate_to_dde_flattables(patient_ids,databasename) unless patient_ids.blank?
+	end
 end
 
 start

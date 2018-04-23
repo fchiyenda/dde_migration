@@ -1,18 +1,18 @@
 production:
-  adapter: mysql
-  username: 
-  database: openmrs_test
-  password: 
+  adapter: postgresql
+  encoding: unicode
+  username: postgres
+  database: dde_person_evr_mtema
+  password: E21081988g
   host: localhost
-  pool: 500
 
 development:
-  adapter: mysql2
-  username: test
-  database: openmrs_MPC
-  password: test
-  host: localhost
-  pool: 500
+  adapter: postgresql
+  encoding: unicode
+  username: postgres
+  database: dde_person_evr_mtema
+  password: E21081988g
+  host: localhost 
 
 test: &TEST
   adapter: mysql

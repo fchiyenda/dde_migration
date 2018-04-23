@@ -29,7 +29,8 @@ person.each do |per|
   				"\"#{person_data['gender']}\"," +
 				  "\"#{person_data['birthdate']}\"," +
 				  "#{dob_est}," +
-				  "\"#{person_data['addresses']['address1'].to_s.gsub("'","\'\\\\\'\'")}\"," + #current residence
+				  "\"#{person_data['addresses']['address1'].to_s.gsub("'","\'\\\\\'\'")}\"," + #closest landmark
+				  "NULL," + #current_residence
 				  "\"#{person_data['addresses']['city_village'].to_s.gsub("'","\'\\\\\'\'")}\"," + #current Village
 				  "\"#{person_data['addresses']['current_ta'].to_s.gsub("'","\'\\\\\'\'")}\"," + #Not available in dde1
 				  "\"#{person_data['addresses']['state_province'].to_s.gsub("'","\'\\\\\'\'")}\"," + #Current District

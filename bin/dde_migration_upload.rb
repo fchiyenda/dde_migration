@@ -140,4 +140,8 @@ def upload_data_to_couch
   puts "Created #{n} records"
 end
 
-upload_data_to_couch
+def start
+	upload_data_to_couch
+end
+
+start
