@@ -28,6 +28,10 @@ evr:
   couchdb: dde_person_evr_mtema
   couchdb_port: 5984
   host: localhost
+dde_npids:
+  couchdb: dde_production
+  couchdb_port: 5984
+  host: localhost
 
 
 cucumber:
