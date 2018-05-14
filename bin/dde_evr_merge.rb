@@ -433,62 +433,80 @@ EOF
 
 end
 
-def get_data_from_mysql	
-   connect_to_mysqldb('localhost','test','test')
-   ngoni_data = querydb('SELECT n.value,p.data,p.created_at FROM EVR_ngoni.national_patient_identifiers n
-      RIGHT JOIN EVR_ngoni.people p ON n.id = p.id WHERE n.value <> "";')
-  ngoni_data.each do |p|
-  	  npid = p['value']
-  	  created_at = p['created_at']
-      p = JSON.parse(p['data'])
-     data = {"doc"=> {"_id" => npid,
-     					 "assigned_site" => "NGA",
-               "patient_assigned"=> true,
-               "person_attributes"=> {
-                     "country_of_residence"=>"",
-							       "citizenship"=> (p['attributes']['citizenship'] rescue nil),
-							       "occupation"=> (p['attributes']['occupation'] rescue nil),
-							       "home_phone_number"=> (p['attributes']['home_phone_number'] rescue nil),
-							       "cell_phone_number"=>(p['attributes']['cell_phone_number'] rescue nil),
-							       "office_phone_number"=>(p['attributes']['office_phone_number'] rescue nil) 
-  																	 },
-   										"gender"=>p['gender'],
-										   "names"=>{
-										       "given_name"=> p['names']['given_name'],
-										       "family_name"=> p['names']['family_name'],
-										       "middle_name"=> p['names']['middle_name']
-										       		   },
-												   "patient"=> {
-												       "identifiers"=> [
-												       									(p['patient']['identifiers'] rescue nil)
-												  										]
-												   },
-												   "birthdate"=> p['birthdate'],
-												   "birthdate_estimated"=>p['birthdate_estimated'],
-												   "addresses"=>{
-												       "current_residence"=> (p['addresses']['address1'] rescue nil),
-												       "current_village"=>(p['addresses']['city_village'] rescue nil),
-												       "current_ta"=> "",
-												       "current_district"=>(p['addresses']['state_province'] rescue nil),
-												       "home_village"=>(p['addresses']['neighborhood_cell'] rescue nil),
-												       "home_ta"=> (p['addresses']['county_district'] rescue nil),
-												       "home_district"=> (p['addresses']['address2'] rescue nil)
-												   },
-												   "updated_at"=>Time.now(),
-												   "created_at"=> created_at,
-												   "type"=>"Person"
+def get_data_from_mysql
+	 databases = ['openmrs_ngoni','openmrs_ukwe','openmrs_A25']
+	 databases.each do |database|
+	   connect_to_mysqldb('localhost','test','test')
+	   location = querydb("SELECT property_value FROM #{database}.global_property WHERE property = 'current_health_center_id';")
+	   location = location.first['property_value']
+	   person_data = querydb("SELECT pi.patient_id,pi.identifier npid,identifier_type,
+                      (SELECT group_concat(pi2.identifier) legacy
+                      FROM #{database}.patient_identifier pi2
+                      WHERE pi2.identifier_type = 2
+                      AND pi.patient_id = pi2.patient_id
+                      GROUP BY patient_id) legacy_ids,
+                      pi.date_created,given_name,middle_name,family_name,gender,birthdate,birthdate_estimated,death_date,pa.*
+                      FROM #{database}.patient_identifier pi
+                      JOIN #{database}.person p
+                      ON pi.patient_id = p.person_id
+                      JOIN #{database}.person_name pn
+                      ON pi.patient_id = pn.person_id
+                      LEFT JOIN #{database}.person_address pa
+                      ON pi.patient_id = pa.person_id
+                      where length(pi.identifier) = 6 
+                      AND pi.voided = 0 and identifier_type = 3 
+                      group by pi.patient_id,pi.identifier;")
+
+	   person_data.each do |p|
+	     data = {"doc"=> {"_id" => p['npid'],
+	     					 "assigned_site" => location,
+	               "patient_assigned"=> true,
+	               "person_attributes"=> {
+	                     "country_of_residence"=>"",
+								       "citizenship"=> (p['citizenship'] rescue nil),
+								       "occupation"=> (p['occupation'] rescue nil),
+								       "home_phone_number"=> (p['home_phone_number'] rescue nil),
+								       "cell_phone_number"=>(p['cell_phone_number'] rescue nil),
+								       "office_phone_number"=>(p['office_phone_number'] rescue nil) 
+	  																	 },
+	   										"gender"=>p['gender'],
+											   "names"=>{
+											       "given_name"=> p['given_name'],
+											       "family_name"=> p['family_name'],
+											       "middle_name"=> p['middle_name']
+											       		   },
+													   "patient"=> {
+													       "identifiers"=> [
+													       									(p['legacy_ids'] rescue nil)
+													  										]
+													   },
+													   "birthdate"=> p['birthdate'].strftime('%Y-%m-%d'),
+													   "birthdate_estimated"=>p['birthdate_estimated'],
+													   "addresses"=>{
+													       "current_residence"=> (p['address1'] rescue nil),
+													       "current_village"=>(p['city_village'] rescue nil),
+													       "current_ta"=> "",
+													       "current_district"=>(p['state_province'] rescue nil),
+													       "home_village"=>(p['neighborhood_cell'] rescue nil),
+													       "home_ta"=> (p['county_district'] rescue nil),
+													       "home_district"=> (p['address2'] rescue nil)
+													   },
+													   "updated_at"=>Time.now(),
+													   "created_at"=> p['date_created'],
+													   "type"=>"Person"
+													}
 												}
-											}
-				person = convert_birthdate_estimated_to_boolean(data)
-				person = escape_apostrophes(person)
-				check_against_merge_criteria(update_person_dob(person['doc']),"Ngoni")
-  end
+					person = convert_birthdate_estimated_to_boolean(data)
+					person = escape_apostrophes(person)
+					check_against_merge_criteria(update_person_dob(person['doc']),location)
+	  end
+	end
 end
 
 def start
 	@config = YAML.load_file('config/database.yml')
 	puts "Create table in database"
-    create_table
+  create_table
 	url = "http://#{@config['evr']['host']}:#{@config['evr']['couchdb_port']}/#{@config['evr']['couchdb']}/_all_docs?limit=1"
 	number_of_records = JSON.parse(RestClient.get(url,content_type: :json))['total_rows'].to_i	
 	counter = 0
@@ -501,7 +519,6 @@ def start
 #Getting data from MySQL Ngoni database
 puts "Getting data from MySQL"
 get_data_from_mysql
-
 end
 
 start
