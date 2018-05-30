@@ -2,9 +2,9 @@ production:
   adapter: postgresql
   encoding: unicode
   username: postgres
-  database: dde_person_evr_mtema
+  database: dde_new_master
   password: E21081988g
-  host: localhost
+  host: localhost 
 
 development:
   adapter: postgresql

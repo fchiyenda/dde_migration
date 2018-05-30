@@ -7,6 +7,8 @@ end
 
 ruby '2.2.2'
 
+gem 'gender_detector'
+gem 'damerau-levenshtein'
 gem 'pg', '~> 0.18'
 gem 'rest-client'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'

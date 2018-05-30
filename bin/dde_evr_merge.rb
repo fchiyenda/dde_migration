@@ -1,6 +1,7 @@
 require 'rest-client'
 require 'json'
 require 'mysql2'
+require 'damerau-levenshtein'
 
 def dbconnect(host,user,pwd)
    @cnn = Mysql2::Client.new(:host => "#{host}", :username => "#{user}",:password => "#{pwd}")
@@ -22,67 +23,78 @@ def get_evr_data(skip = 0)
 end
 
 def insert_into_person_merge(person,source)
-	ActiveRecord::Base.connection.execute <<EOF
-      INSERT INTO evr_merge_person
-      VALUES(DEFAULT,
-      '#{person['_id']}',
-      '#{source}',
-      '#{person['names']['given_name']}',
-      '#{person['names']['middle_name']}',
-      '#{person['names']['family_name']}',
-      '#{person['gender']}',
-      '#{person['birthdate']}',
-      '#{person['birthdate_estimated']}',
-      '#{person['closest_landmark']}',
-      '#{person['addresses']['current_residence']}',
-      '#{person['addresses']['current_village']}',
-      '#{person['addresses']['current_ta']}',
-      '#{person['addresses']['current_district']}',
-      '#{person['addresses']['home_village']}',
-      '#{person['addresses']['home_ta']}',
-      '#{person['addresses']['home_district']}',
-      '#{person['addresses']['country_of_residence']}',
-      '#{person['person_attributes']['citizenship']}',
-      '#{person['person_attributes']['occupation']}',
-      '#{person['person_attributes']['home_phone_number']}',
-      '#{person['person_attributes']['cell_phone_number']}',
-      '#{person['person_attributes']['office_phone_number']}',
-      '#{person['created_at']}',
-      '#{person['assigned_site']}');
+	begin
+		ActiveRecord::Base.connection.execute <<EOF
+	      INSERT INTO evr_merge_person
+	      VALUES(DEFAULT,
+	      '#{person['_id']}',
+	      '#{source}',
+	      '#{person['names']['given_name']}',
+	      '#{person['names']['middle_name']}',
+	      '#{person['names']['family_name']}',
+	      '#{person['gender']}',
+	      '#{person['birthdate']}',
+	      '#{person['birthdate_estimated']}',
+	      '#{person['closest_landmark']}',
+	      '#{person['addresses']['current_residence']}',
+	      '#{person['addresses']['current_village']}',
+	      '#{person['addresses']['current_ta']}',
+	      '#{person['addresses']['current_district']}',
+	      '#{person['addresses']['home_village']}',
+	      '#{person['addresses']['home_ta']}',
+	      '#{person['addresses']['home_district']}',
+	      '#{person['addresses']['country_of_residence']}',
+	      '#{person['person_attributes']['citizenship']}',
+	      '#{person['person_attributes']['occupation']}',
+	      '#{person['person_attributes']['home_phone_number']}',
+	      '#{person['person_attributes']['cell_phone_number']}',
+	      '#{person['person_attributes']['office_phone_number']}',
+	      '#{person['created_at']}',
+	      '#{person['assigned_site']}');
 EOF
+
+	rescue StandardError => e
+    `echo "#{e}" >> #{Rails.root}/log/dde_evr_merge_error.log`
+  end
+
 end
 
 def update_person_merge_conflict(person, merge_id, merge_reason,source)
-	ActiveRecord::Base.connection.execute <<EOF
-      INSERT INTO evr_person_merge_conflict
-      VALUES(DEFAULT,
-      	'#{person['_id']}',
-      	'#{source}',
-      	'#{merge_id.to_i}',
-      	'#{merge_reason.to_i}',
-      	'#{person['names']['given_name']}',
-      	'#{person['names']['middle_name']}',
-      	'#{person['names']['family_name']}',
-      	'#{person['gender']}',
-      	'#{person['birthdate']}',
-      	'#{person['birthdate_estimated']}',
-      	'#{person['closest_landmark']}',
-      	'#{person['addresses']['current_residence']}',
-      	'#{person['addresses']['current_village']}',
-      	'#{person['addresses']['current_ta']}',
-      	'#{person['addresses']['current_district']}',
-      	'#{person['addresses']['home_village']}',
-      	'#{person['addresses']['home_ta']}',
-      	'#{person['addresses']['home_district']}',
-      	'#{person['addresses']['country_of_residence']}',
-      	'#{person['person_attributes']['citizenship']}',
-      	'#{person['person_attributes']['occupation']}',
-      	'#{person['person_attributes']['home_phone_number']}',
-      	'#{person['person_attributes']['cell_phone_number']}',
-      	'#{person['person_attributes']['office_phone_number']}',
-      	'#{person['created_at']}',
-      	'#{person['assigned_site']}');
+	begin
+		ActiveRecord::Base.connection.execute <<EOF
+	      INSERT INTO evr_person_merge_conflict
+	      VALUES(DEFAULT,
+	      	'#{person['_id']}',
+	      	'#{source}',
+	      	'#{merge_id.to_i}',
+	      	'#{merge_reason.to_i}',
+	      	'#{person['names']['given_name']}',
+	      	'#{person['names']['middle_name']}',
+	      	'#{person['names']['family_name']}',
+	      	'#{person['gender']}',
+	      	'#{person['birthdate']}',
+	      	'#{person['birthdate_estimated']}',
+	      	'#{person['closest_landmark']}',
+	      	'#{person['addresses']['current_residence']}',
+	      	'#{person['addresses']['current_village']}',
+	      	'#{person['addresses']['current_ta']}',
+	      	'#{person['addresses']['current_district']}',
+	      	'#{person['addresses']['home_village']}',
+	      	'#{person['addresses']['home_ta']}',
+	      	'#{person['addresses']['home_district']}',
+	      	'#{person['addresses']['country_of_residence']}',
+	      	'#{person['person_attributes']['citizenship']}',
+	      	'#{person['person_attributes']['occupation']}',
+	      	'#{person['person_attributes']['home_phone_number']}',
+	      	'#{person['person_attributes']['cell_phone_number']}',
+	      	'#{person['person_attributes']['office_phone_number']}',
+	      	'#{person['created_at']}',
+	      	'#{person['assigned_site']}');
 EOF
+
+	rescue StandardError => e
+    `echo "#{e}" >> #{Rails.root}/log/dde_evr_merge_error.log`
+  end
 end
 
 def escape_apostrophes(person)
@@ -353,7 +365,8 @@ def write_data_to_file(couch_data)
 	couch_data.each do |person|
 		puts "Processing ... #{person['doc']['_id']}"
     next unless person['doc']['type'] == 'Person' &&
-                person['doc']['addresses']['current_ta'] == 'Mtema'
+                person['doc']['addresses']['current_ta'] == 'Mtema' &&
+                person['doc']['addresses']['current_district'] == 'Lilongwe'
     person = convert_birthdate_estimated_to_boolean(person)
 		person = escape_apostrophes(person)
 		check_against_merge_criteria(person['doc'],"Mtema")
@@ -372,69 +385,69 @@ EOF
 ActiveRecord::Base.connection.execute <<EOF
   CREATE TABLE evr_merge_person(
    merge_id SERIAL,
-   identifier VARCHAR(45) NULL,
-   source VARCHAR(45) NULL,
-   given_name VARCHAR(45) NULL,
-   middle_name VARCHAR(45) NULL,
-  family_name VARCHAR(45) NULL,
-  gender VARCHAR(20) NULL,
+   identifier VARCHAR(255) NULL,
+   source VARCHAR(255) NULL,
+   given_name VARCHAR(255) NULL,
+   middle_name VARCHAR(255) NULL,
+  family_name VARCHAR(255) NULL,
+  gender VARCHAR(255) NULL,
   dob DATE NULL,
   dob_estimated BOOLEAN NULL,
   closest_landmark VARCHAR(255) NULL,
-  current_residence VARCHAR(45) NULL,
-  current_village VARCHAR(245) NULL,
-  current_ta VARCHAR(245) NULL,
-  current_district VARCHAR(45) NULL,
-  home_village VARCHAR(245) NULL,
-  home_ta VARCHAR(245) NULL,
-  home_district VARCHAR(45) NULL,
-  country_of_residence VARCHAR(45) NULL,
+  current_residence VARCHAR(255) NULL,
+  current_village VARCHAR(255) NULL,
+  current_ta VARCHAR(255) NULL,
+  current_district VARCHAR(255) NULL,
+  home_village VARCHAR(255) NULL,
+  home_ta VARCHAR(255) NULL,
+  home_district VARCHAR(255) NULL,
+  country_of_residence VARCHAR(255) NULL,
   citizenship VARCHAR(255) NULL,
   occupation VARCHAR(255) NULL,
   home_phone_number VARCHAR(255) NULL,
   cell_phone_number VARCHAR(255) NULL,
   office_phone_number VARCHAR(255) NULL,
   created_at VARCHAR(255) NULL,
-  assigned_site VARCHAR(45) NULL,  
+  assigned_site VARCHAR(255) NULL,  
   PRIMARY KEY (merge_id));
 EOF
 
 ActiveRecord::Base.connection.execute <<EOF
   CREATE TABLE evr_person_merge_conflict(
   merge_conflict_id SERIAL,
-  identifier VARCHAR(45) NULL,
-  source VARCHAR(45) NULL,
+  identifier VARCHAR(255) NULL,
+  source VARCHAR(255) NULL,
   merge_id INT NOT NULL,
   merge_reason INT NOT NULL,
-  given_name VARCHAR(45) NULL,
-  middle_name VARCHAR(45) NULL,
-  family_name VARCHAR(45) NULL,
-  gender VARCHAR(20) NULL,
+  given_name VARCHAR(255) NULL,
+  middle_name VARCHAR(255) NULL,
+  family_name VARCHAR(255) NULL,
+  gender VARCHAR(255) NULL,
   dob DATE NULL,
   dob_estimated BOOLEAN NULL,
   closest_landmark VARCHAR(255) NULL,
-  current_residence VARCHAR(45) NULL,
-  current_village VARCHAR(245) NULL,
-  current_ta VARCHAR(245) NULL,
-  current_district VARCHAR(45) NULL,
-  home_village VARCHAR(245) NULL,
-  home_ta VARCHAR(245) NULL,
-  home_district VARCHAR(45) NULL,
-  country_of_residence VARCHAR(45) NULL,
+  current_residence VARCHAR(255) NULL,
+  current_village VARCHAR(255) NULL,
+  current_ta VARCHAR(255) NULL,
+  current_district VARCHAR(255) NULL,
+  home_village VARCHAR(255) NULL,
+  home_ta VARCHAR(255) NULL,
+  home_district VARCHAR(255) NULL,
+  country_of_residence VARCHAR(255) NULL,
   citizenship VARCHAR(255) NULL,
   occupation VARCHAR(255) NULL,
   home_phone_number VARCHAR(255) NULL,
   cell_phone_number VARCHAR(255) NULL,
   office_phone_number VARCHAR(255) NULL,
   created_at VARCHAR(255) NULL,
-  assigned_site VARCHAR(45) NULL,  
+  assigned_site VARCHAR(255) NULL,  
   PRIMARY KEY (merge_conflict_id));
 EOF
 
 end
 
 def get_data_from_mysql
-	 databases = ['openmrs_ngoni','openmrs_ukwe','openmrs_A25']
+	 databases = ['openmrs_ngoni']
 	 databases.each do |database|
 	   connect_to_mysqldb('localhost','test','test')
 	   location = querydb("SELECT property_value FROM #{database}.global_property WHERE property = 'current_health_center_id';")
@@ -454,7 +467,9 @@ def get_data_from_mysql
                       LEFT JOIN #{database}.person_address pa
                       ON pi.patient_id = pa.person_id
                       where length(pi.identifier) = 6 
-                      AND pi.voided = 0 and identifier_type = 3 
+                      AND pi.voided = 0 and identifier_type = 3
+                      AND pa.state_province = 'lilongwe' 
+                      AND pa.city_village in ('biwi','bwalo 1','bwalo 2','bwatha','chagamba 1','chakale','chalasa','chaonya','chidalanda','chikamba','chikolokoto','chimphepo chalasa','chisompha','chitawa','chitululu','chiyenda nchiwanda','chizele','chizumba','chule 1','chule 2','dongolosi','fainda','kabwabwa','kabzyoko','kacheche','kafutwe','kalulu','kalundu','kamadzi','kambira','kambulire 1','kambulire 2','kamphinga','kaning\\\'a','kanyoza','kazinkambani','kholongo','konkha','kuthengo','malenga','mankhwazi','maole','maselero','masumba','matchakaza','mawanda','mazira','mbalame','mbalani','mbewa','mbulachisa','mchazime','mchena','mdzoole','mfuti','mgwadula','misewu','mkupeta','mmaso','mndele','mphambu','mphonde','mseteza','mtema 1','mtema 2','mtsukwa chikupa','mtsukwa kalonje','mutu','mwaza','mzingo','mzumazi','mzumazi 2','nchazime','ndalama','ngoza','nkhadani 1','nkhadani 2','nkhanamba','nkhonkha','nkhuchi','nsanda','pheleni','suntche 1','suntche 2','taiza','thandaza','tonde','undi')
                       group by pi.patient_id,pi.identifier;")
 
 	   person_data.each do |p|
@@ -480,7 +495,7 @@ def get_data_from_mysql
 													       									(p['legacy_ids'] rescue nil)
 													  										]
 													   },
-													   "birthdate"=> p['birthdate'].strftime('%Y-%m-%d'),
+													   "birthdate"=> (p['birthdate'].strftime('%Y-%m-%d') rescue '1900-01-01'),
 													   "birthdate_estimated"=>p['birthdate_estimated'],
 													   "addresses"=>{
 													       "current_residence"=> (p['address1'] rescue nil),
@@ -515,7 +530,7 @@ def start
   	write_data_to_file(get_evr_data(counter))
   	counter +=100_000
 	end
-
+	
 #Getting data from MySQL Ngoni database
 puts "Getting data from MySQL"
 get_data_from_mysql
