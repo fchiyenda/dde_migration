@@ -1,10 +1,9 @@
 production:
-  adapter: postgresql
-  encoding: unicode
-  username: postgres
-  database: dde_new_master
-  password: E21081988g
-  host: localhost 
+  adapter: mysql2
+  username: test
+  database: openmrs_A18
+  password: test
+  host: localhost
 
 development:
   adapter: postgresql
@@ -29,7 +28,7 @@ evr:
   couchdb_port: 5984
   host: localhost
 dde_npids:
-  couchdb: dde_production
+  couchdb: dde_production_master_backup
   couchdb_port: 5984
   host: localhost
 

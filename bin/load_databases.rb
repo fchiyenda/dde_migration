@@ -36,12 +36,12 @@ def start
   dumps = []
   puts 'Please full path to where dumps are located'
   path_to_dumps = gets.chomp
-  dumps = Dir["#{path_to_dumps}/openmrs*"]
+  dumps = Dir["#{path_to_dumps}/*openmrs*"]
   dumps.each do |file|
     uncompress(file)
   end
   dumps.clear
-  dumps = Dir["#{path_to_dumps}/openmrs*"]
+  dumps = Dir["#{path_to_dumps}/*openmrs*"]
   dumps.each do |dumpfile|
     dumpfile_name = dumpfile.dup
     database_name = clean_dashes(dumpfile)

@@ -1,29 +1,26 @@
-  
-  %x(rm #{Rails.root}/log/dde_load_npids_errors.log)
-  i = 1
-  File.open('/home/fchiyenda/Documents/Boabab/DDE/dde_npid.sql', 'r').each_line do |line|
-  	puts "Processing record #{i}"
-    line = "#{line}"
-    line = line.split(',')
-    if line[4].to_i == 1
-       line[4] = 't' 
-    elsif line[4].to_i == 0
-       line[4] == 'f'
-    end
-   line = "(DEFAULT,#{line[1]},'#{line[2]}',4,'#{line[4]}','#{line[5]}','#{line[6]}')"
-   begin
+`rm #{Rails.root}/log/dde_load_npids_errors.log`
+i = 1
+data = ''
+File.open('/home/fchiyenda/Documents/Boabab/DDE/dde_npid.sql', 'r').each_line do |line|
+  puts "Processing record #{i}"
+  data += "(#{line}),"
+  if (i % 50_000).zero? || 72_601_742 == i
+    data.chomp!(',')
+    puts 'Loading data into MySQL'
+    begin
       ActiveRecord::Base.connection.execute <<EOF
-    	  INSERT INTO npids values #{line};
+    	  INSERT INTO npids values #{data};
 EOF
-
     rescue StandardError => e
-      %x(echo "#{e}" >> #{Rails.root}/log/dde_load_npids_errors.log)
+      `echo "#{e}" >> #{Rails.root}/log/dde_load_npids_errors.log`
     end
-    i += 1
+    data.clear
   end
+  i += 1
+end
 
-  def create_table
-    ActiveRecord::Base.connection.execute <<EOF
+def create_table
+  ActiveRecord::Base.connection.execute <<EOF
       CREATE TABLE npids (
       id serial PRIMARY KEY NOT NULL UNIQUE,
       couchdb_ref bigint NOT NULL,
@@ -33,4 +30,4 @@ EOF
       created_at timestamp NOT NULL,
       updated_at timestamp NOT NULL);
 EOF
-  end
+end
