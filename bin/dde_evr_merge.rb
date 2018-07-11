@@ -40,7 +40,7 @@ def insert_into_person_merge(person,source)
 	      '#{person['middle_name']}',
 	      '#{person['family_name']}',
 	      '#{person['gender']}',
-	      '#{person['birthdate']}',
+	      '#{person['dob']}',
 	      '#{person['birthdate_estimated']}',
 	      '#{person['closest_landmark']}',
 	      '#{person['current_residence']}',
@@ -60,8 +60,6 @@ def insert_into_person_merge(person,source)
 	      '#{person['assigned_site']}');
 EOF
 
-raise person.inspect
-
 end
 
 def update_person_merge_conflict(person, merge_id, merge_reason,source)
@@ -77,7 +75,7 @@ def update_person_merge_conflict(person, merge_id, merge_reason,source)
 	      	'#{person['middle_name']}',
 	      	'#{person['family_name']}',
 	      	'#{person['gender']}',
-	      	'#{person['birthdate']}',
+	      	'#{person['dob']}',
 	      	'#{person['birthdate_estimated']}',
 	      	'#{person['closest_landmark']}',
 	      	'#{person['current_residence']}',
@@ -122,13 +120,13 @@ end
 def scenario1(person)
 ActiveRecord::Base.connection.select_all <<EOF
 				SELECT * FROM evr_merge_person
-				WHERE identifier = '#{person['_id']}'
+				WHERE identifier = '#{person['identifier']}'
 				AND lower(given_name) = lower('#{person['given_name']}')
 				AND lower(middle_name) = lower('#{person['middle_name']}')
 				AND lower(family_name) = lower('#{person['family_name']}')
 				AND lower(gender) = lower('#{person['gender']}')
-				AND dob = '#{person['birthdate']}'
-				AND dob_estimated = '#{person['birthdate_estimated']}'
+				AND dob = '#{person['dob']}'
+				AND dob_estimated = '#{person['dob_estimated']}'
 				AND lower(home_district) = lower('#{person['home_district']}')
 				AND lower(home_ta) = lower('#{person['home_ta']}')
 				AND lower(home_village) = lower('#{person['home_village']}')
@@ -145,8 +143,8 @@ def scenario2(person)
 				AND lower(middle_name) = lower('#{person['middle_name']}')
 				AND lower(family_name) = lower('#{person['family_name']}')
 				AND lower(gender) = lower('#{person['gender']}')
-				AND dob = '#{person['birthdate']}'
-				AND dob_estimated = '#{person['birthdate_estimated']}'
+				AND dob = '#{person['dob']}'
+				AND dob_estimated = '#{person['dob_estimated']}'
 				AND lower(home_district) = lower('#{person['home_district']}')
 				AND lower(home_ta) = lower('#{person['home_ta']}')
 				AND lower(home_village) = lower('#{person['home_village']}')
@@ -159,13 +157,13 @@ end
 def scenario3(person)
 	ActiveRecord::Base.connection.select_all <<EOF
 				SELECT * FROM evr_merge_person
-				WHERE identifier = '#{person['_id']}'
+				WHERE identifier = '#{person['identifier']}'
 				AND lower(given_name) = lower('#{person['given_name']}')
 				AND lower(middle_name) = lower('#{person['middle_name']}')
 				AND lower(family_name) = lower('#{person['family_name']}')
 				AND lower(gender) = lower('#{person['gender']}')
-				AND dob = '#{person['birthdate']}'
-				AND dob_estimated = '#{person['birthdate_estimated']}'
+				AND dob = '#{person['dob']}'
+				AND dob_estimated = '#{person['dob_estimated']}'
 				AND lower(home_district) = lower('#{person['home_district']}')
 				AND lower(home_ta) = lower('#{person['home_ta']}')
 				AND lower(home_village) = lower('#{person['home_village']}');
@@ -179,8 +177,8 @@ def scenario4(person)
 				AND lower(middle_name) = lower('#{person['middle_name']}')
 				AND lower(family_name) = lower('#{person['family_name']}')
 				AND lower(gender) = lower('#{person['gender']}')
-				AND dob = '#{person['birthdate']}'
-				AND dob_estimated = '#{person['birthdate_estimated']}'
+				AND dob = '#{person['dob']}'
+				AND dob_estimated = '#{person['dob_estimated']}'
 				AND lower(home_district) = lower('#{person['home_district']}')
 				AND lower(home_ta) = lower('#{person['home_ta']}')
 				AND lower(home_village) = lower('#{person['home_village']}');
@@ -190,13 +188,13 @@ end
 def scenario5(person)
   ActiveRecord::Base.connection.select_all <<EOF
 				SELECT * FROM evr_merge_person
-				WHERE identifier = '#{person['_id']}'
+				WHERE identifier = '#{person['identifier']}'
 				AND lower(given_name) = lower('#{person['given_name']}')
 				AND lower(middle_name) = lower('#{person['middle_name']}')
 				AND lower(family_name) = lower('#{person['family_name']}')
 				AND lower(gender) = lower('#{person['gender']}')
-				AND dob = '#{person['birthdate']}'
-				AND dob_estimated = '#{person['birthdate_estimated']}'
+				AND dob = '#{person['dob']}'
+				AND dob_estimated = '#{person['dob_estimated']}'
 				AND lower(home_ta) = lower('#{person['home_ta']}')
 				AND lower(home_village) = lower('#{person['home_village']}')
 				AND lower(current_ta) = lower('#{person['current_ta']}')
@@ -211,8 +209,8 @@ def scenario6(person)
 				AND lower(middle_name) = lower('#{person['middle_name']}')
 				AND lower(family_name) = lower('#{person['family_name']}')
 				AND lower(gender) = lower('#{person['gender']}')
-				AND dob = '#{person['birthdate']}'
-				AND dob_estimated = '#{person['birthdate_estimated']}'
+				AND dob = '#{person['dob']}'
+				AND dob_estimated = '#{person['dob_estimated']}'
 				AND lower(home_ta) = lower('#{person['home_ta']}')
 				AND lower(home_village) = lower('#{person['home_village']}')
 				AND lower(current_ta) = lower('#{person['current_ta']}')
@@ -223,13 +221,13 @@ end
 def scenario7(person)
 	ActiveRecord::Base.connection.select_all <<EOF
 				SELECT * FROM evr_merge_person
-				WHERE identifier = '#{person['_id']}'
+				WHERE identifier = '#{person['identifier']}'
 				AND lower(given_name) = lower('#{person['given_name']}')
 				AND lower(middle_name) = lower('#{person['middle_name']}')
 				AND lower(family_name) = lower('#{person['family_name']}')
 				AND lower(gender) = lower('#{person['gender']}')
-				AND dob = '#{person['birthdate']}'
-				AND dob_estimated = '#{person['birthdate_estimated']}'
+				AND dob = '#{person['dob']}'
+				AND dob_estimated = '#{person['dob_estimated']}'
 				AND lower(home_ta) = lower('#{person['home_ta']}')
 				AND lower(home_village) = lower('#{person['home_village']}');
 EOF
@@ -242,8 +240,8 @@ def scenario8(person)
 				AND lower(middle_name) = lower('#{person['middle_name']}')
 				AND lower(family_name) = lower('#{person['family_name']}')
 				AND lower(gender) = lower('#{person['gender']}')
-				AND dob = '#{person['birthdate']}'
-				AND dob_estimated = '#{person['birthdate_estimated']}'
+				AND dob = '#{person['dob']}'
+				AND dob_estimated = '#{person['dob_estimated']}'
 				AND lower(home_ta) = lower('#{person['home_ta']}')
 				AND lower(home_village) = lower('#{person['home_village']}');
 EOF
@@ -252,13 +250,13 @@ end
 def scenario9(person)
 	ActiveRecord::Base.connection.select_all <<EOF
 				SELECT * FROM evr_merge_person
-				WHERE identifier = '#{person['_id']}'
+				WHERE identifier = '#{person['identifier']}'
 				AND lower(given_name) = lower('#{person['given_name']}')
 				AND lower(middle_name) = lower('#{person['middle_name']}')
 				AND lower(family_name) = lower('#{person['family_name']}')
 				AND lower(gender) = lower('#{person['gender']}')
-				AND dob = '#{person['birthdate']}'
-				AND dob_estimated = '#{person['birthdate_estimated']}';
+				AND dob = '#{person['dob']}'
+				AND dob_estimated = '#{person['dob_estimated']}';
 EOF
 end
 
@@ -269,8 +267,8 @@ ActiveRecord::Base.connection.select_all <<EOF
 				AND lower(middle_name) = lower('#{person['middle_name']}')
 				AND lower(family_name) = lower('#{person['family_name']}')
 				AND lower(gender) = lower('#{person['gender']}')
-				AND dob = '#{person['birthdate']}'
-				AND dob_estimated = '#{person['birthdate_estimated']}'
+				AND dob = '#{person['dob']}'
+				AND dob_estimated = '#{person['dob_estimated']}'
 				AND lower(home_ta) = lower('#{person['home_ta']}')
 				AND lower(home_village) = lower('#{person['home_village']}');
 EOF
@@ -283,15 +281,15 @@ ActiveRecord::Base.connection.select_all <<EOF
 				AND lower(middle_name) = lower('#{person['middle_name']}')
 				AND lower(family_name) = lower('#{person['family_name']}')
 				AND lower(gender) = lower('#{person['gender']}')
-				AND dob = '#{person['birthdate']}'
-				AND dob_estimated = '#{person['birthdate_estimated']}'
+				AND dob = '#{person['dob']}'
+				AND dob_estimated = '#{person['dob_estimated']}'
 				AND lower(current_district) = lower('#{person['current_district']}')
 				AND lower(current_ta) = lower('#{person['current_ta']}');
 EOF
 end
 
 def check_against_merge_criteria(person,source)
-	person = update_person_dob(person)
+	#puts "Processing #{person['merge_id']}"
 	if !scenario1(person).blank?
     update_person_merge_conflict(person, scenario1(person).first['merge_id'], '1', source)
   elsif !scenario2(person).blank?
@@ -579,38 +577,76 @@ EOF
 =end
 
 def query_db(query)
-	
-	data = ActiveRecord::Base.connection.select_all <<EOF
+  data = ActiveRecord::Base.connection.select_all <<EOF
 	 	 	 #{query};
 EOF
 
-return data
+end
 
+def convert_chichewa_sex_to_english(person)
+	if ((person['gender']).strip).downcase == 'mkazi'
+		person['gender'] = 'F'
+	else
+		person['gender'] = 'M'
+	end
+
+	return person		
 end
 
 def get_data
-	  evr_record_count = ActiveRecord::Base.connection.select_all <<EOF
-	 	 	 select count(*) from evr_person;
+  evr_record_count = ActiveRecord::Base.connection.select_all <<EOF
+	 	 	 select count(*) from evr_person where TRIM(lower(current_district)) = 'lilongwe' 
+AND (TRIM(lower(current_ta)) = 'mtema' 
+OR TRIM(lower(current_village)) in 
+('biwi','bwalo 1','bwalo 2','bwatha','chagamba 1','chakale','chalasa','chaonya','chidalanda','chikamba','chikolokoto','chimphepo chalasa','chisompha','chitawa','chitululu','chiyenda nchiwanda',
+'chizele','chizumba','chule 1','chule 2','dongolosi','fainda','kabwabwa','kabzyoko','kacheche','kafutwe','kalulu','kalundu','kamadzi','kambira','kambulire 1','kambulire 2','kamphinga','kaning''a',
+'kanyoza','kazinkambani','kholongo','konkha','kuthengo','malenga','mankhwazi','maole','maselero','masumba','matchakaza','mawanda','mazira','mbalame','mbalani','mbewa','mbulachisa','mchazime','mchena',
+'mdzoole','mfuti','mgwadula','misewu','mkupeta','mmaso','mndele','mphambu','mphonde','mseteza','mtema 1','mtema 2','mtsukwa chikupa','mtsukwa kalonje','mutu','mwaza','mzingo','mzumazi','mzumazi 2',
+'nchazime','ndalama','ngoza','nkhadani 1','nkhadani 2','nkhanamba','nkhonkha','nkhuchi','nsanda','pheleni','suntche 1','suntche 2','taiza','thandaza','tonde','undi'));
 EOF
 
-	i = 0
-	while i <= evr_record_count.first['count'].to_i do
-		person = query_db("select * from evr_person limit 100 offset #{i}")
-		person.each do |p|
-				p = convert_birthdate_estimated_to_boolean(p)
-				p = escape_apostrophes(p)
-				check_against_merge_criteria(p,'evr')
+  i = 0
+  while i <= evr_record_count.first['count'].to_i do
+  	puts " EVR #{i} of #{evr_record_count.first['count'].to_i}"
+    person = query_db("select * from evr_person where TRIM(lower(current_district)) = 'lilongwe' 
+AND (TRIM(lower(current_ta)) = 'mtema' 
+OR TRIM(lower(current_village)) in 
+('biwi','bwalo 1','bwalo 2','bwatha','chagamba 1','chakale','chalasa','chaonya','chidalanda','chikamba','chikolokoto','chimphepo chalasa','chisompha','chitawa','chitululu','chiyenda nchiwanda',
+'chizele','chizumba','chule 1','chule 2','dongolosi','fainda','kabwabwa','kabzyoko','kacheche','kafutwe','kalulu','kalundu','kamadzi','kambira','kambulire 1','kambulire 2','kamphinga','kaning''a',
+'kanyoza','kazinkambani','kholongo','konkha','kuthengo','malenga','mankhwazi','maole','maselero','masumba','matchakaza','mawanda','mazira','mbalame','mbalani','mbewa','mbulachisa','mchazime','mchena',
+'mdzoole','mfuti','mgwadula','misewu','mkupeta','mmaso','mndele','mphambu','mphonde','mseteza','mtema 1','mtema 2','mtsukwa chikupa','mtsukwa kalonje','mutu','mwaza','mzingo','mzumazi','mzumazi 2',
+'nchazime','ndalama','ngoza','nkhadani 1','nkhadani 2','nkhanamba','nkhonkha','nkhuchi','nsanda','pheleni','suntche 1','suntche 2','taiza','thandaza','tonde','undi')) limit 100 offset #{i}")
+    person.each do |p|
+		  p = convert_birthdate_estimated_to_boolean(p)
+			p = escape_apostrophes(p)
+			p = convert_chichewa_sex_to_english(p)
+			check_against_merge_criteria(p,'evr')
 		end
 		i += 100
 	end
 	  
 	  ngoni_record_count = ActiveRecord::Base.connection.select_all <<EOF
-	    select count(*) from ngoni_person;
+	    select count(*) from ngoni_person where TRIM(lower(current_district)) = 'lilongwe' 
+AND (TRIM(lower(current_ta)) = 'mtema' 
+OR TRIM(lower(current_village)) in 
+('biwi','bwalo 1','bwalo 2','bwatha','chagamba 1','chakale','chalasa','chaonya','chidalanda','chikamba','chikolokoto','chimphepo chalasa','chisompha','chitawa','chitululu','chiyenda nchiwanda',
+'chizele','chizumba','chule 1','chule 2','dongolosi','fainda','kabwabwa','kabzyoko','kacheche','kafutwe','kalulu','kalundu','kamadzi','kambira','kambulire 1','kambulire 2','kamphinga','kaning''a',
+'kanyoza','kazinkambani','kholongo','konkha','kuthengo','malenga','mankhwazi','maole','maselero','masumba','matchakaza','mawanda','mazira','mbalame','mbalani','mbewa','mbulachisa','mchazime','mchena',
+'mdzoole','mfuti','mgwadula','misewu','mkupeta','mmaso','mndele','mphambu','mphonde','mseteza','mtema 1','mtema 2','mtsukwa chikupa','mtsukwa kalonje','mutu','mwaza','mzingo','mzumazi','mzumazi 2',
+'nchazime','ndalama','ngoza','nkhadani 1','nkhadani 2','nkhanamba','nkhonkha','nkhuchi','nsanda','pheleni','suntche 1','suntche 2','taiza','thandaza','tonde','undi'));
 EOF
 
 	i = 0
 	while i <= ngoni_record_count.first['count'].to_i do
-		person = query_db("select * from ngoni_person limit 100 offset #{i}")
+		puts " Ngoni #{i} of #{ngoni_record_count.first['count'].to_i}"
+		person = query_db("select * from ngoni_person where TRIM(lower(current_district)) = 'lilongwe' 
+AND (TRIM(lower(current_ta)) = 'mtema' 
+OR TRIM(lower(current_village)) in 
+('biwi','bwalo 1','bwalo 2','bwatha','chagamba 1','chakale','chalasa','chaonya','chidalanda','chikamba','chikolokoto','chimphepo chalasa','chisompha','chitawa','chitululu','chiyenda nchiwanda',
+'chizele','chizumba','chule 1','chule 2','dongolosi','fainda','kabwabwa','kabzyoko','kacheche','kafutwe','kalulu','kalundu','kamadzi','kambira','kambulire 1','kambulire 2','kamphinga','kaning''a',
+'kanyoza','kazinkambani','kholongo','konkha','kuthengo','malenga','mankhwazi','maole','maselero','masumba','matchakaza','mawanda','mazira','mbalame','mbalani','mbewa','mbulachisa','mchazime','mchena',
+'mdzoole','mfuti','mgwadula','misewu','mkupeta','mmaso','mndele','mphambu','mphonde','mseteza','mtema 1','mtema 2','mtsukwa chikupa','mtsukwa kalonje','mutu','mwaza','mzingo','mzumazi','mzumazi 2',
+'nchazime','ndalama','ngoza','nkhadani 1','nkhadani 2','nkhanamba','nkhonkha','nkhuchi','nsanda','pheleni','suntche 1','suntche 2','taiza','thandaza','tonde','undi')) limit 100 offset #{i}")
 		person.each do |p|	
 				p = convert_birthdate_estimated_to_boolean(p)
 				p = escape_apostrophes(p)
@@ -637,7 +673,7 @@ def start
 =end
 	
 # Getting data from MySQL Ngoni database
- puts "Getting data from MySQL"
+ puts "Getting data from Postgre"
  get_data
 end
 

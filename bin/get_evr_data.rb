@@ -13,14 +13,14 @@ end
 
 def convert_for_file(data,dob_est)
   data = 'DEFAULT,' \
-         "\'#{data['_id']}\'," \
+         "\'#{data['doc']['_id']}\'," \
          "\'Mtema\'," \
          "\'#{data['doc']['names']['given_name'].to_s.gsub("'", "''")}\'," \
          "\'#{data['doc']['names']['middle_name'].to_s.gsub("'", "''")}\'," \
          "\'#{data['doc']['names']['family_name'].to_s.gsub("'", "''")}\'," \
          "\'#{data['doc']['gender']}\'," \
          "\'#{data['doc']['birthdate']}\'," \
-         "#{data['doc']['birthdate_estimated']}," \
+         "#{dob_est}," \
          "\'#{data['doc']['addresses']['closest_landmark'].to_s.gsub("'", "''")}\'," \
          "\'#{data['doc']['addresses']['current_residence'].to_s.gsub("'", "''")}\'," \
          "\'#{data['doc']['addresses']['current_village'].to_s.gsub("'", "''")}\'," \
@@ -37,6 +37,48 @@ def convert_for_file(data,dob_est)
          "\'#{data['doc']['person_attributes']['office_phone_number']}\'," \
          "\'#{data['doc']['created_at']}\'," \
          "\'#{data['doc']['assigned_site']}\'"
+
+end
+
+def update_person_dob(person)
+  person = person['doc']
+#Check if day and month are both estimated
+  if person['birthdate'].blank? || !person.key?('birthdate')
+    check_date = ["1900","01","01"]
+  else
+    if person['birthdate'].include?('-') 
+      check_date = person['birthdate'].split('-')
+    elsif person['birthdate'].include?('/')
+      check_date = person['birthdate'].split('/')
+    end 
+
+    if check_date[0].include?('?') && check_date[1].include?('?')
+      check_date[0] = '01'
+      check_date[1] = '07'
+    elsif check_date[0].include?('?')
+      check_date[0] = '15'
+    elsif check_date[2].include?('?')
+      check_date[0] = '01'
+      check_date[1] = '01'
+      check_date[2] = '1900'
+    else
+      #Do nothing
+    end
+  end
+  i = 0
+  check_date.each do |value|
+    check_date[i] = '1900' if value == '0000'
+    check_date[i] = '01' if value == '00'
+    check_date[i] = '01' if value == '00'
+    i += 1
+  end
+  dob = "#{check_date[2]}-#{check_date[1]}-#{check_date[0]}"
+
+  person['birthdate'] = dob.to_date.strftime("%Y-%m-%d")
+
+  person = {"doc" => person}
+
+  return person
 end
 
 def write_data_to_file(couch_data)
@@ -45,20 +87,21 @@ def write_data_to_file(couch_data)
     if person['doc']['type'] == 'Person'
       if person['doc']['birthdate_estimated'] == 1
         dob_est = true
-      elsif person['doc']['birthdate_estimated'] == 0
+      else
         dob_est = false
       end
+      person = update_person_dob(person)
       person_data = convert_for_file(person, dob_est)
       @data += "(#{person_data}),"
-      if (@i % 300).zero? || @number_of_records.to_i == @i
+      if (@i % 10_000).zero? || @number_of_records.to_i == @i
         @data.chomp!(',')
         puts 'Loading data into PostgreSQL'
         begin
           ActiveRecord::Base.connection.execute <<EOF
             INSERT INTO evr_person values #{@data};
 EOF
-        rescue StandardError => e
-          `echo "#{e}" >> #{Rails.root}/log/evr_load_into_flattable.log`
+        rescue => e
+          `echo "#{e.message}" >> #{Rails.root}/log/evr_load_into_flattable.log`
         end
           @data.clear
         end
